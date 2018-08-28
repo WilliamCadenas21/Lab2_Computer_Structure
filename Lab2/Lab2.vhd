@@ -36,74 +36,62 @@ architecture FSM of lab2 is
 	signal r1: std_logic_vector(3 downto 0);
 	signal l1: std_logic_vector(3 downto 0); 
 	signal ps2_array : STD_LOGIC_VECTOR(10 DOWNTO 0);
-
+	
+	function show (vector : std_logic_vector(3 downto 0))
+	return std_logic_vector is
+	variable output :std_logic_vector(6 downto 0);
+	
+	begin
+			case vector is
+				when "0000" => output := "0000001";--0
+				when "0001" => output := "1001111";--1
+				when "0010" => output := "0010010";--2
+				when "0011" => output := "0000110";--3
+				when "0100" => output := "1001100";--4
+				when "0101" => output := "0100100";--5	
+				when "0110" => output := "0100000";--6	
+				when "0111" => output := "0001111";--7	
+				when "1000" => output := "0000000";--8
+				when "1001" => output := "0001100";--9
+				when "1010" => output := "0001000";--A
+				when "1011" => output := "1100000";--b
+				when "1100" => output := "0110001";--c
+				when "1101" => output := "1000010";--d	
+				when "1110" => output := "0110000";--e	
+				when others => output := "0111000";--f	--"1111"
+			end case;
+			return output;
+	end;
+	
 begin
-
 -- this process verify the number of the count
-process(clock,ps2_clk) 
+process(ps2_clk) 
 
 begin
-	if(ps2_clk'EVENT and ps2_clk='1') then
+	if(ps2_clk'EVENT and ps2_clk='0') then
 
 		ps2_array(count) <= ps2_data;
 
-		if(count = 10)then
-			--mostrar hexadecimal
-			l1(0) <= ps2_array(1);
-			l1(1) <= ps2_array(2);
-			l1(2) <= ps2_array(3);
-			l1(3) <= ps2_array(4);
+		if(count < 10)then
+			count <= count + 1;
 			
-			r1(0) <= ps2_array(5);
-			r1(1) <= ps2_array(6);
-			r1(2) <= ps2_array(7);
-			r1(3) <= ps2_array(8);
-
-
-			case r1 is
-				when "0000" => display_right <= "0000001";--0
-				when "0001" => display_right <= "1001111";--1
-				when "0010" => display_right <= "0010010";--2
-				when "0011" => display_right <= "0000110";--3
-				when "0100" => display_right <= "1001100";--4
-				when "0101" => display_right <= "0100100";--5	
-				when "0110" => display_right <= "0100000";--6	
-				when "0111" => display_right <= "0001111";--7	
-				when "1000" => display_right <= "0000000";--8
-				when "1001" => display_right <= "0001100";--9
-				when "1010" => display_right <= "0001000";--A
-				when "1011" => display_right <= "1100000";--b
-				when "1100" => display_right <= "0110001";--c
-				when "1101" => display_right <= "1000010";--d	
-				when "1110" => display_right <= "0110000";--e	
-				when others => display_right <= "0111000";--f	--"1111"
-			end case;
-			
-			case l1 is
-				when "0000" => display_left <= "0000001";--0
-				when "0001" => display_left <= "1001111";--1
-				when "0010" => display_left <= "0010010";--2
-				when "0011" => display_left <= "0000110";--3
-				when "0100" => display_left <= "1001100";--4
-				when "0101" => display_left <= "0100100";--5	
-				when "0110" => display_left <= "0100000";--6			
-				when "0111" => display_left <= "0001111";--7		
-				when "1000" => display_left <= "0000000";--8
-				when "1001" => display_left <= "0001100";--9
-				when "1010" => display_left <= "0001000";--A
-            when "1011" => display_left <= "1100000";--b
-				when "1100" => display_left <= "0110001";--c
-				when "1101" => display_left <= "1000010";--d	
-				when "1110" => display_left <= "0110000";--e	
-				when others => display_left <= "0111000";--f	--"1111"
-			end case;
-			count <= 0;
 			else
-				count <= count +1;
+			--mostrar hexadecimal
+			display_right <= show(ps2_array(8 downto 5));
+			display_left <= show(ps2_array(4 downto 1));
+--			l1(0) <= ps2_array(1);
+--			l1(1) <= ps2_array(2);
+--			l1(2) <= ps2_array(3);
+--			l1(3) <= ps2_array(4);
+			
+--			r1(0) <= ps2_array(5);
+--			r1(1) <= ps2_array(6);
+--			r1(2) <= ps2_array(7);
+--			r1(3) <= ps2_array(8);
+
+			count <= 0;
 			end if;
 		end if;
-
-
 end process;	 
 
 
