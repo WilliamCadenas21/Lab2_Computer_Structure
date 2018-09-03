@@ -9,19 +9,23 @@ entity lab2 is
 port(	
 
 --inputs
-clock:	in std_logic;
-
-reset:	in std_logic;
-velocity:	in std_logic;
-ps2_clk    : IN  STD_LOGIC;                     --clock signal from PS2 keyboard
-  ps2_data   : IN  STD_LOGIC;                     --data signal from PS2 keyboard
+	clock:		in std_logic;
+	reset:		in std_logic;	
+	velocity:	in std_logic;
+	ps2_clk:		IN  STD_LOGIC;                     --clock signal from PS2 keyboard
+	ps2_data: 	IN  STD_LOGIC;
+	lcd:			out std_logic_vector(7 downto 0);  --LCD data pins
+	enviar: 		out std_logic;    --Send signal
+	rs:			out std_logic;    --Data or command
+	rw: 			out std_logic;   --read/write
+	--data signal from PS2 keyboard
 
 
 --outputs
-display_right : out  STD_LOGIC_VECTOR (0 to 6);
-display_left : out  STD_LOGIC_VECTOR (0 to 6); 
-led1: out STD_LOGIC;
-led2: out STD_LOGIC
+	display_right : out  STD_LOGIC_VECTOR (0 to 6);
+	display_left : out  STD_LOGIC_VECTOR (0 to 6); 
+	led1: out STD_LOGIC;
+	led2: out STD_LOGIC
 
 
 );
@@ -30,17 +34,22 @@ end lab2;
 -----------------------------------------------------
 
 architecture FSM of lab2 is
-
+	signal info std_logic_vector(7 downto 0);
+	signal ascii std_logic_vector(7 downto 0);
 	signal clockTimer: integer:= 0; --2hz 
 	signal count: integer := 0;
+	signal sw: integer := 0;
 	signal r1: std_logic_vector(3 downto 0);
 	signal l1: std_logic_vector(3 downto 0); 
-	signal ps2_array : STD_LOGIC_VECTOR(10 DOWNTO 0);
+	signal ps2_array : STD_LOGIC_VECTOR(10 DOWNTO 0);		
+	type state_type is (encender, configpantalla,encenderdisplay, limpiardisplay, configcursor,listo,fin);    --Define dfferent states to control the LCD
+   signal estado: state_type;
+	constant milisegundos: integer := 50000;
+	constant microsegundos: integer := 50;
 	
 	function show (vector : std_logic_vector(3 downto 0))
 	return std_logic_vector is
 	variable output :std_logic_vector(6 downto 0);
-	
 	begin
 			case vector is
 				when "0000" => output := "0000001";--0
@@ -64,9 +73,32 @@ architecture FSM of lab2 is
 	end;
 	
 begin
+
+
+process(info)
+	begin
+	if (sw = 0) then
+		if(info = "11110000")then --F0
+			sw := 1;
+		else
+			-- verificar que letra es para saber 
+			--que asccii enviar
+			case vector is
+				when "00011100" => ascii := "01000001";--0
+				when others => ascii := "01000110";--f	--"1111"
+			end case;
+			
+		end
+	else
+		sw:= 0;
+	end
+end process;
+
+
+end process;
+
 -- this process verify the number of the count
 process(ps2_clk) 
-
 begin
 	if(ps2_clk'EVENT and ps2_clk='0') then
 
@@ -77,22 +109,116 @@ begin
 			
 			else
 			--mostrar hexadecimal
+			info <= ps2_array(8 downto 1);
 			display_right <= show(ps2_array(8 downto 5));
 			display_left <= show(ps2_array(4 downto 1));
---			l1(0) <= ps2_array(1);
---			l1(1) <= ps2_array(2);
---			l1(2) <= ps2_array(3);
---			l1(3) <= ps2_array(4);
-			
---			r1(0) <= ps2_array(5);
---			r1(1) <= ps2_array(6);
---			r1(2) <= ps2_array(7);
---			r1(3) <= ps2_array(8);
 
 			count <= 0;
 			end if;
 		end if;
-end process;	 
+end process;
+
+comb_logic: process(clock, ascii)
+  variable contar: integer := 0;
+  begin
+	if (clock'event and clock='1') then
+	  case estado is
+	    when encender =>
+		  if (contar < 50*milisegundos) then    --Wait for the LCD to start all its components
+				contar := contar + 1;
+				estado <= encender;
+			else
+				enviar <= '0';
+				contar := 0; 
+				estado <= configpantalla;
+			end if;
+			--From this point we will send diffrent configuration commands as shown in class
+			--You should check the manual to understand what configurations we are sending to
+			--The display. You have to wait between each command for the LCD to take configurations.
+	    when configpantalla =>
+			if (contar = 0) then
+				contar := contar +1;
+				rs <= '0';
+				rw <= '0';
+				lcd <= "00111000";
+				enviar <= '1';
+				estado <= configpantalla;
+			elsif (contar < 1*milisegundos) then
+				contar := contar + 1;
+				estado <= configpantalla;
+			else
+				enviar <= '0';
+				contar := 0;
+				estado <= encenderdisplay;
+			end if;
+	    when encenderdisplay =>
+			if (contar = 0) then
+				contar := contar +1;
+				lcd <= "00001111";				
+				enviar <= '1';
+				estado <= encenderdisplay;
+			elsif (contar < 1*milisegundos) then
+				contar := contar + 1;
+				estado <= encenderdisplay;
+			else
+				enviar <= '0';
+				contar := 0;
+				estado <= limpiardisplay;
+			end if;
+	    when limpiardisplay =>	
+			if (contar = 0) then
+				contar := contar +1;
+				lcd <= "00000001";				
+				enviar <= '1';
+				estado <= limpiardisplay;
+			elsif (contar < 1*milisegundos) then
+				contar := contar + 1;
+				estado <= limpiardisplay;
+			else
+				enviar <= '0';
+				contar := 0;
+				estado <= configcursor;
+			end if;
+	    when configcursor =>	
+			if (contar = 0) then
+				contar := contar +1;
+				lcd <= "00000100";				
+				enviar <= '1';
+				estado <= configcursor;
+			elsif (contar < 1*milisegundos) then
+				contar := contar + 1;
+				estado <= configcursor;
+			else
+				enviar <= '0';
+				contar := 0;
+				estado <= listo;
+			end if;
+			--The display is now configured now it you just can send data to de LCD 
+			--In this example we are just sending letter A, for this project you
+			--Should make it variable for what has been pressed on the keyboard.
+	    when listo =>	
+			if (contar = 0) then
+				rs <= '1';
+				rw <= '0';
+				enviar <= '1';
+				lcd <= ascii; -- ascii de A
+				contar := contar +1;
+				estado <= listo;
+			elsif (contar < 1*milisegundos) then
+				contar := contar + 1;
+				estado <= listo;
+			else
+				enviar <= '0';
+				contar := 0;
+				estado <= fin;
+			end if;
+		  when fin =>
+			estado <= fin;
+	    when others =>
+			estado <= encender;
+	  end case;
+	end if;
+ end process;	 
 
 
 end FSM;
