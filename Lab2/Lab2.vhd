@@ -12,8 +12,13 @@ port(
 	clock:		in std_logic;
 	reset:		in std_logic;	
 	velocity:	in std_logic;
-	ps2_clk:		IN  STD_LOGIC;                     --clock signal from PS2 keyboard
+	
+	--Clock
+	ps2_clk:		IN  STD_LOGIC; --clock signal from PS2 keyboard
 	ps2_data: 	IN  STD_LOGIC;
+	
+	
+	--LCD
 	lcd:			out std_logic_vector(7 downto 0);  --LCD data pins
 	enviar: 		out std_logic;    --Send signal
 	rs:			out std_logic;    --Data or command
@@ -34,9 +39,9 @@ end lab2;
 -----------------------------------------------------
 
 architecture FSM of lab2 is
-	signal info std_logic_vector(7 downto 0);
-	signal ascii std_logic_vector(7 downto 0);
-	signal clockTimer: integer:= 0; --2hz 
+	signal info: std_logic_vector(7 downto 0);
+	signal ascii: std_logic_vector(7 downto 0);
+	signal clockTimer: integer:= 12500000; --2hz 
 	signal count: integer := 0;
 	signal sw: integer := 0;
 	signal r1: std_logic_vector(3 downto 0);
@@ -72,30 +77,64 @@ architecture FSM of lab2 is
 			return output;
 	end;
 	
-begin
-
-
-process(info)
+	function returnAscii (vector : std_logic_vector(7 downto 0))
+	return std_logic_vector is
+	variable output :std_logic_vector(7 downto 0);
 	begin
-	if (sw = 0) then
-		if(info = "11110000")then --F0
-			sw := 1;
-		else
-			-- verificar que letra es para saber 
-			--que asccii enviar
 			case vector is
-				when "00011100" => ascii := "01000001";--0
-				when others => ascii := "01000110";--f	--"1111"
+				when "00011100" => output := "01000001";--A LISTO
+				when "00011011" => output := "01000010";--B LISTO
+				when "00110001" => output := "01000011";--C
+				when "00110011" => output := "01000100";--D
+				when "" => output := "01000110";--E
+				when "" => output := "01000101";--F
+				when "" => output := "01000111";--G
+				when "" => output := "01001000";--H
+				when "" => output := "01001001";--I
+				when "" => output := "01001010";--J
+				when "" => output := "01001011";--K
+				when "" => output := "01001100";--L
+				when "" => output := "01001101";--M
+				when "" => output := "01001110";--N
+				when "" => output := "01001111";--O
+				when "" => output := "01010000";--P
+				when "" => output := "01010001";--Q
+				when "" => output := "01010010";--R
+				when "" => output := "01010011";--S
+				when "" => output := "01010100";--T
+				when "" => output := "01010101";--U
+				when "00011100" => output := "01010110";--V
+				when "11110000" => output := "01010111";--W
+				when "11110000" => output := "01011000";--X
+				when "11110000" => output := "01011001";--Y
+				when "11110000" => output := "01011010";--Z
+				when others => output := "00100100";	--$ hex=24
 			end case;
-			
-		end
-	else
-		sw:= 0;
-	end
-end process;
+			return output;
+	end;
+	
+	begin
+
+--	process(info)
+--		begin
+----			if (sw = 0) then
+----				if(info = "11110000")then --F0
+----					sw <= 1;
+----				else
+--					-- verificar que letra es para saber 
+--					--que asccii enviar
+--					case info is
+--						when "00011100" => ascii <= "01000001";--A
+--						when "11110000" => ascii <= "01000110";--f
+--						when others => ascii <= "01001111";	--o
+--					end case;
+----				end if;
+----			else
+----				sw <= 0;
+----			end if;
+--	end process;
 
 
-end process;
 
 -- this process verify the number of the count
 process(ps2_clk) 
@@ -109,20 +148,25 @@ begin
 			
 			else
 			--mostrar hexadecimal
-			info <= ps2_array(8 downto 1);
 			display_right <= show(ps2_array(8 downto 5));
 			display_left <= show(ps2_array(4 downto 1));
+			
+			if(NOT(ps2_array(8 downto 5) = "1111"))then
+				info <= ps2_array(8 downto 1);
+			end if;
 
 			count <= 0;
 			end if;
 		end if;
 end process;
 
-comb_logic: process(clock, ascii)
+comb_logic: process(clock, info)
   variable contar: integer := 0;
   begin
 	if (clock'event and clock='1') then
+	
 	  case estado is
+	  
 	    when encender =>
 		  if (contar < 50*milisegundos) then    --Wait for the LCD to start all its components
 				contar := contar + 1;
@@ -132,6 +176,7 @@ comb_logic: process(clock, ascii)
 				contar := 0; 
 				estado <= configpantalla;
 			end if;
+			
 			--From this point we will send diffrent configuration commands as shown in class
 			--You should check the manual to understand what configurations we are sending to
 			--The display. You have to wait between each command for the LCD to take configurations.
@@ -151,6 +196,7 @@ comb_logic: process(clock, ascii)
 				contar := 0;
 				estado <= encenderdisplay;
 			end if;
+			
 	    when encenderdisplay =>
 			if (contar = 0) then
 				contar := contar +1;
@@ -165,6 +211,7 @@ comb_logic: process(clock, ascii)
 				contar := 0;
 				estado <= limpiardisplay;
 			end if;
+			
 	    when limpiardisplay =>	
 			if (contar = 0) then
 				contar := contar +1;
@@ -179,6 +226,7 @@ comb_logic: process(clock, ascii)
 				contar := 0;
 				estado <= configcursor;
 			end if;
+			
 	    when configcursor =>	
 			if (contar = 0) then
 				contar := contar +1;
@@ -196,15 +244,16 @@ comb_logic: process(clock, ascii)
 			--The display is now configured now it you just can send data to de LCD 
 			--In this example we are just sending letter A, for this project you
 			--Should make it variable for what has been pressed on the keyboard.
+			
 	    when listo =>	
 			if (contar = 0) then
 				rs <= '1';
 				rw <= '0';
 				enviar <= '1';
-				lcd <= ascii; -- ascii de A
-				contar := contar +1;
+				lcd <= returnAscii(info); -- ascii 
+				contar := contar + 1;
 				estado <= listo;
-			elsif (contar < 1*milisegundos) then
+			elsif (contar < 1000*milisegundos) then
 				contar := contar + 1;
 				estado <= listo;
 			else
@@ -212,13 +261,14 @@ comb_logic: process(clock, ascii)
 				contar := 0;
 				estado <= fin;
 			end if;
+			
 		  when fin =>
-			estado <= fin;
+			estado <= listo;
+			
 	    when others =>
 			estado <= encender;
 	  end case;
 	end if;
  end process;	 
-
 
 end FSM;
