@@ -85,29 +85,29 @@ architecture FSM of lab2 is
 				when "00011100" => output := "01000001";--A LISTO
 				when "00011011" => output := "01000010";--B LISTO
 				when "00110001" => output := "01000011";--C
-				when "00110011" => output := "01000100";--D
-				when "" => output := "01000110";--E
-				when "" => output := "01000101";--F
-				when "" => output := "01000111";--G
-				when "" => output := "01001000";--H
-				when "" => output := "01001001";--I
-				when "" => output := "01001010";--J
-				when "" => output := "01001011";--K
-				when "" => output := "01001100";--L
-				when "" => output := "01001101";--M
-				when "" => output := "01001110";--N
-				when "" => output := "01001111";--O
-				when "" => output := "01010000";--P
-				when "" => output := "01010001";--Q
-				when "" => output := "01010010";--R
-				when "" => output := "01010011";--S
-				when "" => output := "01010100";--T
-				when "" => output := "01010101";--U
-				when "00011100" => output := "01010110";--V
-				when "11110000" => output := "01010111";--W
-				when "11110000" => output := "01011000";--X
-				when "11110000" => output := "01011001";--Y
-				when "11110000" => output := "01011010";--Z
+				when "00100011" => output := "01000100";--D
+				when "00100100" => output := "01000110";--E
+				when "00101011" => output := "01000101";--F
+				when "00110100" => output := "01000111";--G
+				when "00110011" => output := "01001000";--H
+				when "01000011" => output := "01001001";--I
+				when "00111011" => output := "01001010";--J
+				when "01000010" => output := "01001011";--K
+				when "01001011" => output := "01001100";--L
+				when "00111010" => output := "01001101";--M
+				when "00110001" => output := "01001110";--N
+				when "01000100" => output := "01001111";--O
+				when "01001101" => output := "01010000";--P
+				when "00010101" => output := "01010001";--Q
+				when "00101101" => output := "01010010";--R
+				when "00011011" => output := "01010011";--S
+				when "00101100" => output := "01010100";--T
+				when "00111100" => output := "01010101";--U
+				when "00101010" => output := "01010110";--V
+				when "00011101" => output := "01010111";--W
+				when "00100010" => output := "01011000";--X
+				when "00110101" => output := "01011001";--Y
+				when "00011010" => output := "01011010";--Z
 				when others => output := "00100100";	--$ hex=24
 			end case;
 			return output;
