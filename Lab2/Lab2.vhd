@@ -12,26 +12,19 @@ port(
 	clock:		in std_logic;
 	reset:		in std_logic;	
 	velocity:	in std_logic;
-	
-	--Clock
-	ps2_clk:		IN  STD_LOGIC; --clock signal from PS2 keyboard
-	ps2_data: 	IN  STD_LOGIC;
-	
-	
-	--LCD
-	lcd:			out std_logic_vector(7 downto 0);  --LCD data pins
-	enviar: 		out std_logic;    --Send signal
-	rs:			out std_logic;    --Data or command
-	rw: 			out std_logic;   --read/write
-	--data signal from PS2 keyboard
+	ps2_clk:		in  std_logic;--clock signal from PS2 keyboard
+	ps2_data: 	in  std_logic;
 
 
 --outputs
-	display_right : out  STD_LOGIC_VECTOR (0 to 6);
-	display_left : out  STD_LOGIC_VECTOR (0 to 6); 
-	led1: out STD_LOGIC;
-	led2: out STD_LOGIC
-
+	lcd:			out std_logic_vector(7 downto 0);--LCD data pins
+	enviar: 		out std_logic;   --Send signal
+	rs:			out std_logic;   --Data or command
+	rw: 			out std_logic;   --read/write
+	display_right : out  std_logic_vector(0 to 6);
+	display_left : out  std_logic_vector(0 to 6); 
+	led1: out std_logic;
+	led2: out std_logic
 
 );
 end lab2;
@@ -40,14 +33,17 @@ end lab2;
 
 architecture FSM of lab2 is
 	signal info: std_logic_vector(7 downto 0);
+
+	signal stop: integer := 0;--sin funcionalidad
+	
 	signal ascii: std_logic_vector(7 downto 0);
-	signal clockTimer: integer:= 12500000; --2hz 
+	signal clockTimer: integer:= 0; --2hz 
 	signal count: integer := 0;
 	signal sw: integer := 0;
 	signal r1: std_logic_vector(3 downto 0);
 	signal l1: std_logic_vector(3 downto 0); 
 	signal ps2_array : STD_LOGIC_VECTOR(10 DOWNTO 0);		
-	type state_type is (encender, configpantalla,encenderdisplay, limpiardisplay, configcursor,listo,fin);    --Define dfferent states to control the LCD
+	type state_type is (encender, configpantalla, encenderdisplay, limpiardisplay, configcursor, listo, fin, esperar);    --Define dfferent states to control the LCD
    signal estado: state_type;
 	constant milisegundos: integer := 50000;
 	constant microsegundos: integer := 50;
@@ -77,62 +73,56 @@ architecture FSM of lab2 is
 			return output;
 	end;
 	
-	function returnAscii (vector : std_logic_vector(7 downto 0))
-	return std_logic_vector is
-	variable output :std_logic_vector(7 downto 0);
-	begin
-			case vector is
-				when "00011100" => output := "01000001";--A LISTO
-				when "00011011" => output := "01000010";--B LISTO
-				when "00110001" => output := "01000011";--C
-				when "00100011" => output := "01000100";--D
-				when "00100100" => output := "01000110";--E
-				when "00101011" => output := "01000101";--F
-				when "00110100" => output := "01000111";--G
-				when "00110011" => output := "01001000";--H
-				when "01000011" => output := "01001001";--I
-				when "00111011" => output := "01001010";--J
-				when "01000010" => output := "01001011";--K
-				when "01001011" => output := "01001100";--L
-				when "00111010" => output := "01001101";--M
-				when "00110001" => output := "01001110";--N
-				when "01000100" => output := "01001111";--O
-				when "01001101" => output := "01010000";--P
-				when "00010101" => output := "01010001";--Q
-				when "00101101" => output := "01010010";--R
-				when "00011011" => output := "01010011";--S
-				when "00101100" => output := "01010100";--T
-				when "00111100" => output := "01010101";--U
-				when "00101010" => output := "01010110";--V
-				when "00011101" => output := "01010111";--W
-				when "00100010" => output := "01011000";--X
-				when "00110101" => output := "01011001";--Y
-				when "00011010" => output := "01011010";--Z
-				when others => output := "00100100";	--$ hex=24
-			end case;
-			return output;
-	end;
-	
-	begin
+begin
 
---	process(info)
---		begin
-----			if (sw = 0) then
-----				if(info = "11110000")then --F0
-----					sw <= 1;
-----				else
---					-- verificar que letra es para saber 
---					--que asccii enviar
---					case info is
---						when "00011100" => ascii <= "01000001";--A
---						when "11110000" => ascii <= "01000110";--f
---						when others => ascii <= "01001111";	--o
---					end case;
-----				end if;
-----			else
-----				sw <= 0;
-----			end if;
---	end process;
+process(info)
+
+	begin
+			case info is
+				when "00011100" => ascii <= "01000001";--A 
+				when "00110010" => ascii <= "01000010";--B 
+				when "00100001" => ascii <= "01000011";--C
+				when "00100011" => ascii <= "01000100";--D
+				when "00100100" => ascii <= "01000101";--E
+				when "00101011" => ascii <= "01000110";--F
+				when "00110100" => ascii <= "01000111";--G
+				when "00110011" => ascii <= "01001000";--H
+				when "01000011" => ascii <= "01001001";--I
+				when "00111011" => ascii <= "01001010";--J
+				when "01000010" => ascii <= "01001011";--K
+				when "01001011" => ascii <= "01001100";--L
+				when "00111010" => ascii <= "01001101";--M
+				when "00110001" => ascii <= "01001110";--N
+				when "01000100" => ascii <= "01001111";--O
+				when "01001101" => ascii <= "01010000";--P
+				when "00010101" => ascii <= "01010001";--Q
+				when "00101101" => ascii <= "01010010";--R
+				when "00011011" => ascii <= "01010011";--S
+				when "00101100" => ascii <= "01010100";--T
+				when "00111100" => ascii <= "01010101";--U
+				when "00101010" => ascii <= "01010110";--V
+				when "00011101" => ascii <= "01010111";--W
+				when "00100010" => ascii <= "01011000";--X
+				when "00110101" => ascii <= "01011001";--Y
+				when "00011010" => ascii <= "01011010";--Z
+				when "11110000" => ascii <= "01000000";--@ ~ F0
+				when "00101001" => ascii <= "00100000";-- (space)
+				
+				when "01000101" => ascii <= "00110000";--0
+				when "00010110" => ascii <= "00110001";--1
+				when "00011110" => ascii <= "00110010";--2
+				when "00100110" => ascii <= "01011011";--3
+				when "00100101" => ascii <= "00110100";--4
+				when "00101110" => ascii <= "00110101";--5
+				when "00110110" => ascii <= "00110110";--6
+				when "00111101" => ascii <= "00110111";--7
+				when "00111110" => ascii <= "00111000";--8
+				when "01000110" => ascii <= "00111001";--9
+				when others => ascii <= "00101101";	--(dash) hex=25
+			end case;
+			
+end process;
+
 
 
 
@@ -142,21 +132,19 @@ begin
 	if(ps2_clk'EVENT and ps2_clk='0') then
 
 		ps2_array(count) <= ps2_data;
-
+		stop<=1;
 		if(count < 10)then
 			count <= count + 1;
 			
 			else
 			--mostrar hexadecimal
+			info <= ps2_array(8 downto 1);
 			display_right <= show(ps2_array(8 downto 5));
 			display_left <= show(ps2_array(4 downto 1));
-			
-			if(NOT(ps2_array(8 downto 5) = "1111"))then
-				info <= ps2_array(8 downto 1);
-			end if;
-
+			stop<=0;
 			count <= 0;
-			end if;
+		end if;
+			
 		end if;
 end process;
 
@@ -250,10 +238,12 @@ comb_logic: process(clock, info)
 				rs <= '1';
 				rw <= '0';
 				enviar <= '1';
-				lcd <= returnAscii(info); -- ascii 
-				contar := contar + 1;
-				estado <= listo;
-			elsif (contar < 1000*milisegundos) then
+				if(ascii /= "01000000") then
+					lcd <= ascii; -- ascii
+					contar := contar +1;
+					estado <= listo;
+				end if;
+			elsif (contar < 1*milisegundos) then
 				contar := contar + 1;
 				estado <= listo;
 			else
@@ -263,8 +253,11 @@ comb_logic: process(clock, info)
 			end if;
 			
 		  when fin =>
-			estado <= listo;
-			
+			if(ascii /= "01000000") then
+				estado <= fin;
+			else
+				estado <= listo;
+			end if;
 	    when others =>
 			estado <= encender;
 	  end case;
