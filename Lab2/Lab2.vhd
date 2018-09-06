@@ -10,11 +10,11 @@ port(
 
 --inputs
 	clock:		in std_logic;
-	reset:		in std_logic;	
+	reset:		in std_logic;	-- sw[0]
 	velocity:	in std_logic;
 	ps2_clk:		in  std_logic;--clock signal from PS2 keyboard
 	ps2_data: 	in  std_logic;
-
+   provicional: 	in  std_logic; -- sw[17]
 
 --outputs
 	lcd:			out std_logic_vector(7 downto 0);--LCD data pins
@@ -43,10 +43,10 @@ architecture FSM of lab2 is
 	signal r1: std_logic_vector(3 downto 0);
 	signal l1: std_logic_vector(3 downto 0); 
 	signal ps2_array : STD_LOGIC_VECTOR(10 DOWNTO 0);		
-	type state_type is (encender, configpantalla, encenderdisplay, limpiardisplay, configcursor, listo, fin, esperar);    --Define dfferent states to control the LCD
+	type state_type is (encender, configpantalla, encenderdisplay, limpiardisplay, configcursor, listo, fin, breakLine);    --Define dfferent states to control the LCD
    signal estado: state_type;
 	constant milisegundos: integer := 50000;
-	constant microsegundos: integer := 50;
+	constant microsegundos: integer := 50; 
 	
 	function show (vector : std_logic_vector(3 downto 0))
 	return std_logic_vector is
@@ -74,6 +74,14 @@ architecture FSM of lab2 is
 	end;
 	
 begin
+--process(provicional)
+--begin
+--	if	(provicional = '0') then
+--		ascii <= "01000001"; --a
+--	else
+--	   ascii <= "01000000"; --f0
+--   end if;		
+--end process;
 
 process(info)
 
@@ -123,9 +131,6 @@ process(info)
 			
 end process;
 
-
-
-
 -- this process verify the number of the count
 process(ps2_clk) 
 begin
@@ -148,11 +153,16 @@ begin
 		end if;
 end process;
 
-comb_logic: process(clock, info)
+comb_logic: process(clock, info, reset)
   variable contar: integer := 0;
+  variable contar2: integer := 0;
   begin
+  
 	if (clock'event and clock='1') then
-	
+--		if(reset = '0')then
+--		  estado <= encender;
+--      end if;
+  
 	  case estado is
 	  
 	    when encender =>
@@ -239,12 +249,13 @@ comb_logic: process(clock, info)
 				rw <= '0';
 				enviar <= '1';
 				if(ascii /= "01000000") then
-					lcd <= ascii; -- ascii
-					contar := contar +1;
-					estado <= listo;
+						lcd <= ascii; -- ascii
+						contar := contar +1;
+						contar2 := contar2 +1;
+						estado <= listo;   
 				end if;
 			elsif (contar < 1*milisegundos) then
-				contar := contar + 1;
+				contar := contar + 1;       
 				estado <= listo;
 			else
 				enviar <= '0';
@@ -252,12 +263,41 @@ comb_logic: process(clock, info)
 				estado <= fin;
 			end if;
 			
-		  when fin =>
-			if(ascii /= "01000000") then
-				estado <= fin;
+		when breakline =>	
+			if (contar = 0) then
+				rs <= '0';
+				rw <= '0';
+				enviar <= '1';
+				if(contar = 15)then
+					lcd <= "11000000";
+				else
+					lcd <= "10000000";
+				end if;
+				 -- ascii
+				contar := contar +1;
+				estado <= breakline;   
+			elsif (contar < 1*milisegundos) then
+				contar := contar + 1;       
+				estado <= breakline;
 			else
-				estado <= listo;
+				enviar <= '0';
+				contar := 0;
+				estado <= fin;
 			end if;
+			
+		  when fin =>
+			if(contar2 = 15)then
+				estado <= breakline;
+			elsif (contar2 = 32) then
+				estado <= breakline;
+			else
+				if(ascii /= "01000000") then
+					estado <= fin;
+				else
+					estado <= listo;
+				end if;	
+			end if;
+			
 	    when others =>
 			estado <= encender;
 	  end case;
