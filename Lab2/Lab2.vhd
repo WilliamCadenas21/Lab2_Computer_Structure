@@ -21,10 +21,9 @@ port(
 	enviar: 		out std_logic;   --Send signal
 	rs:			out std_logic;   --Data or command
 	rw: 			out std_logic;   --read/write
-	display_right : out  std_logic_vector(0 to 6);
-	display_left : out  std_logic_vector(0 to 6); 
-	led1: out std_logic;
-	led2: out std_logic
+	display_right : out  std_logic_vector(0 to 6) := "1111111";
+	display_left : out  std_logic_vector(0 to 6):= "1111111";
+	led_vector : out  std_logic_vector(7 downto 0)
 
 );
 end lab2;
@@ -73,14 +72,6 @@ architecture FSM of lab2 is
 	end;
 	
 begin
---process(provicional)
---begin
---	if	(provicional = '0') then
---		ascii <= "01000001"; --a
---	else
---	   ascii <= "01000000"; --f0
---   end if;		
---end process;
 
 process(info)
 
@@ -125,7 +116,7 @@ process(info)
 				when "00111101" => ascii <= "00110111";--7
 				when "00111110" => ascii <= "00111000";--8
 				when "01000110" => ascii <= "00111001";--9
-				when others => ascii <= "00101101";	--(dash) hex=25
+				when others => ascii <= "00100101";	--(%) hex=25
 			end case;
 			
 end process;
@@ -136,13 +127,14 @@ begin
 	if(ps2_clk'EVENT and ps2_clk='0') then
 
 		ps2_array(count) <= ps2_data;
-		stop<=1;
 		if(count < 10)then
 			count <= count + 1;
 			
 			else
 			--mostrar hexadecimal
 			info <= ps2_array(8 downto 1);
+			
+			led_vector<= ps2_array(8 downto 1);
 			display_right <= show(ps2_array(8 downto 5));
 			display_left <= show(ps2_array(4 downto 1));
 			stop<=0;
@@ -152,7 +144,7 @@ begin
 		end if;
 end process;
 
-comb_logic: process(clock, info, reset)
+comb_logic: process(clock)
   variable contar: integer := 0;
   variable contar2: integer := 0;
   begin
@@ -250,7 +242,7 @@ comb_logic: process(clock, info, reset)
 				if(ascii /= "01000000") then
 						lcd <= ascii; -- ascii
 						contar := contar +1;
-						contar2 := contar2 +1;
+--						contar2 := contar2 +1;
 						estado <= listo;   
 				end if;
 			elsif (contar < 1*milisegundos) then
@@ -262,39 +254,38 @@ comb_logic: process(clock, info, reset)
 				estado <= fin;
 			end if;
 			
-		when breakline =>	
-			if (contar = 0) then
-				rs <= '0';
-				rw <= '0';
-				enviar <= '1';
-				lcd <= "11000000";
-				--lcd <= "10000000";
-				contar2 := 0;
-				contar := contar +1;
-				estado <= breakline;   
-			elsif (contar < 1*milisegundos) then
-				contar := contar + 1;       
-				estado <= breakline;
-			else
-				enviar <= '0';
-				contar := 0;
-				estado <= fin;
-			end if;
+--		when breakline =>	
+--			if (contar = 0) then
+--				rs <= '0';
+--				rw <= '0';
+--				enviar <= '1';
+--				if(contar2= 16)then
+--					lcd <= "11000000"; --Hacia abajo
+--				elsif(contar2= 32)then
+--					lcd <= "10000000"; --Hacia arriba
+--					contar2 := 0;
+--				end if;
+--				contar := contar +1;
+--				estado <= breakline;   
+--			elsif (contar < 1*milisegundos) then
+--				contar := contar + 1;       
+--				estado <= breakline;
+--			else
+--				enviar <= '0';
+--				contar := 0;
+--				estado <= fin;
+--			end if;
 			
 		  when fin =>
-			if(contar2 > 15)then
-				estado <= breakline;
-			else
-				if(ascii /= "01000000") then
-					estado <= fin;
-				else
-					if(sw /= 0)then
-						estado <= listo;
-					else
-						sw <= 1;
-					end if;
-				end if;	
-			end if;
+--			if(contar2 = 16 or contar2 = 32)then
+--				estado <= breakline;
+--			else
+--				if(ascii /= "01000000") then
+--					estado <= fin;
+--				else
+					estado <= listo;
+--				end if;	
+--			end if;
 			
 	    when others =>
 			estado <= encender;
