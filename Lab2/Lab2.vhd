@@ -32,14 +32,13 @@ end lab2;
 -----------------------------------------------------
 
 architecture FSM of lab2 is
-	signal info: std_logic_vector(7 downto 0);
+	signal info: std_logic_vector(7 downto 0) := "11110000";
 
 	signal stop: integer := 0;--sin funcionalidad
-	
-	signal ascii: std_logic_vector(7 downto 0);
+	signal sw: integer := 0;-- para el error de la primera letra
+	signal ascii: std_logic_vector(7 downto 0) := "01000000";
 	signal clockTimer: integer:= 0; --2hz 
 	signal count: integer := 0;
-	signal sw: integer := 0;
 	signal r1: std_logic_vector(3 downto 0);
 	signal l1: std_logic_vector(3 downto 0); 
 	signal ps2_array : STD_LOGIC_VECTOR(10 DOWNTO 0);		
@@ -119,7 +118,7 @@ process(info)
 				when "01000101" => ascii <= "00110000";--0
 				when "00010110" => ascii <= "00110001";--1
 				when "00011110" => ascii <= "00110010";--2
-				when "00100110" => ascii <= "01011011";--3
+				when "00100110" => ascii <= "00110011";--3
 				when "00100101" => ascii <= "00110100";--4
 				when "00101110" => ascii <= "00110101";--5
 				when "00110110" => ascii <= "00110110";--6
@@ -268,12 +267,9 @@ comb_logic: process(clock, info, reset)
 				rs <= '0';
 				rw <= '0';
 				enviar <= '1';
-				if(contar = 15)then
-					lcd <= "11000000";
-				else
-					lcd <= "10000000";
-				end if;
-				 -- ascii
+				lcd <= "11000000";
+				--lcd <= "10000000";
+				contar2 := 0;
 				contar := contar +1;
 				estado <= breakline;   
 			elsif (contar < 1*milisegundos) then
@@ -286,15 +282,17 @@ comb_logic: process(clock, info, reset)
 			end if;
 			
 		  when fin =>
-			if(contar2 = 15)then
-				estado <= breakline;
-			elsif (contar2 = 32) then
+			if(contar2 > 15)then
 				estado <= breakline;
 			else
 				if(ascii /= "01000000") then
 					estado <= fin;
 				else
-					estado <= listo;
+					if(sw /= 0)then
+						estado <= listo;
+					else
+						sw <= 1;
+					end if;
 				end if;	
 			end if;
 			

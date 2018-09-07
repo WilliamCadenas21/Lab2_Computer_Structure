@@ -1,5 +1,5 @@
 Analysis & Synthesis report for Lab2
-Thu Sep 06 18:07:15 2018
+Fri Sep 07 10:08:25 2018
 Quartus Prime Version 17.1.0 Build 590 10/25/2017 SJ Lite Edition
 
 
@@ -16,10 +16,11 @@ Quartus Prime Version 17.1.0 Build 590 10/25/2017 SJ Lite Edition
   8. State Machine - |lab2|estado
   9. Registers Removed During Synthesis
  10. General Register Statistics
- 11. Multiplexer Restructuring Statistics (Restructuring Performed)
- 12. Post-Synthesis Netlist Statistics for Top Partition
- 13. Elapsed Time Per Partition
- 14. Analysis & Synthesis Messages
+ 11. Inverted Register Statistics
+ 12. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 13. Post-Synthesis Netlist Statistics for Top Partition
+ 14. Elapsed Time Per Partition
+ 15. Analysis & Synthesis Messages
 
 
 
@@ -45,15 +46,15 @@ refer to the applicable agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Thu Sep 06 18:07:15 2018       ;
+; Analysis & Synthesis Status        ; Successful - Fri Sep 07 10:08:25 2018       ;
 ; Quartus Prime Version              ; 17.1.0 Build 590 10/25/2017 SJ Lite Edition ;
 ; Revision Name                      ; Lab2                                        ;
 ; Top-level Entity Name              ; lab2                                        ;
 ; Family                             ; Cyclone IV E                                ;
 ; Total logic elements               ; 288                                         ;
-;     Total combinational functions  ; 277                                         ;
-;     Dedicated logic registers      ; 144                                         ;
-; Total registers                    ; 144                                         ;
+;     Total combinational functions  ; 281                                         ;
+;     Dedicated logic registers      ; 145                                         ;
+; Total registers                    ; 145                                         ;
 ; Total pins                         ; 33                                          ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0                                           ;
@@ -182,18 +183,18 @@ refer to the applicable agreement for further details.
 +---------------------------------------------+-------------+
 ; Estimated Total logic elements              ; 288         ;
 ;                                             ;             ;
-; Total combinational functions               ; 277         ;
+; Total combinational functions               ; 281         ;
 ; Logic element usage by number of LUT inputs ;             ;
-;     -- 4 input functions                    ; 145         ;
-;     -- 3 input functions                    ; 32          ;
-;     -- <=2 input functions                  ; 100         ;
+;     -- 4 input functions                    ; 148         ;
+;     -- 3 input functions                    ; 27          ;
+;     -- <=2 input functions                  ; 106         ;
 ;                                             ;             ;
 ; Logic elements by mode                      ;             ;
-;     -- normal mode                          ; 185         ;
-;     -- arithmetic mode                      ; 92          ;
+;     -- normal mode                          ; 188         ;
+;     -- arithmetic mode                      ; 93          ;
 ;                                             ;             ;
-; Total registers                             ; 144         ;
-;     -- Dedicated logic registers            ; 144         ;
+; Total registers                             ; 145         ;
+;     -- Dedicated logic registers            ; 145         ;
 ;     -- I/O registers                        ; 0           ;
 ;                                             ;             ;
 ; I/O pins                                    ; 33          ;
@@ -201,9 +202,9 @@ refer to the applicable agreement for further details.
 ; Embedded Multiplier 9-bit elements          ; 0           ;
 ;                                             ;             ;
 ; Maximum fan-out node                        ; clock~input ;
-; Maximum fan-out                             ; 82          ;
-; Total fan-out                               ; 1372        ;
-; Average fan-out                             ; 2.82        ;
+; Maximum fan-out                             ; 83          ;
+; Total fan-out                               ; 1412        ;
+; Average fan-out                             ; 2.87        ;
 +---------------------------------------------+-------------+
 
 
@@ -212,7 +213,7 @@ refer to the applicable agreement for further details.
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
 ; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name ; Entity Name ; Library Name ;
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
-; |lab2                      ; 277 (277)           ; 144 (144)                 ; 0           ; 0            ; 0       ; 0         ; 33   ; 0            ; |lab2               ; lab2        ; work         ;
+; |lab2                      ; 281 (281)           ; 145 (145)                 ; 0           ; 0            ; 0       ; 0         ; 33   ; 0            ; |lab2               ; lab2        ; work         ;
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
@@ -234,14 +235,15 @@ Encoding Type:  One-Hot
 +------------------------+------------------+------------+--------------+---------------------+-----------------------+------------------------+-----------------------+-----------------+
 
 
-+--------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                             ;
-+---------------------------------------+----------------------------------------+
-; Register name                         ; Reason for Removal                     ;
-+---------------------------------------+----------------------------------------+
-; rw~reg0                               ; Stuck at GND due to stuck port data_in ;
-; Total Number of Removed Registers = 1 ;                                        ;
-+---------------------------------------+----------------------------------------+
++---------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                              ;
++----------------------------------------+----------------------------------------+
+; Register name                          ; Reason for Removal                     ;
++----------------------------------------+----------------------------------------+
+; sw[1..31]                              ; Stuck at GND due to stuck port data_in ;
+; rw~reg0                                ; Stuck at GND due to stuck port data_in ;
+; Total Number of Removed Registers = 32 ;                                        ;
++----------------------------------------+----------------------------------------+
 
 
 +------------------------------------------------------+
@@ -249,24 +251,38 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 144   ;
-; Number of registers using Synchronous Clear  ; 64    ;
+; Total registers                              ; 145   ;
+; Number of registers using Synchronous Clear  ; 96    ;
 ; Number of registers using Synchronous Load   ; 0     ;
 ; Number of registers using Asynchronous Clear ; 0     ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 90    ;
+; Number of registers using Clock Enable       ; 91    ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
 
-+-------------------------------------------------------------------------------------------------------------------------------------------+
-; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                            ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+-----------------------------+
-; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output  ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+-----------------------------+
-; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |lab2|lcd[4]~reg0           ;
-; 8:1                ; 32 bits   ; 160 LEs       ; 32 LEs               ; 128 LEs                ; Yes        ; |lab2|\comb_logic:contar[2] ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+-----------------------------+
++--------------------------------------------------+
+; Inverted Register Statistics                     ;
++----------------------------------------+---------+
+; Inverted Register                      ; Fan out ;
++----------------------------------------+---------+
+; info[6]                                ; 12      ;
+; info[4]                                ; 16      ;
+; info[7]                                ; 16      ;
+; info[5]                                ; 16      ;
+; Total number of inverted registers = 4 ;         ;
++----------------------------------------+---------+
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                              ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output    ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------+
+; 5:1                ; 32 bits   ; 96 LEs        ; 32 LEs               ; 64 LEs                 ; Yes        ; |lab2|\comb_logic:contar2[17] ;
+; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |lab2|lcd[4]~reg0             ;
+; 8:1                ; 32 bits   ; 160 LEs       ; 32 LEs               ; 128 LEs                ; Yes        ; |lab2|\comb_logic:contar[24]  ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------+
 
 
 +-----------------------------------------------------+
@@ -275,24 +291,23 @@ Encoding Type:  One-Hot
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
 ; boundary_port         ; 33                          ;
-; cycloneiii_ff         ; 144                         ;
-;     ENA               ; 58                          ;
-;     ENA SCLR          ; 32                          ;
+; cycloneiii_ff         ; 145                         ;
+;     ENA               ; 27                          ;
+;     ENA SCLR          ; 64                          ;
 ;     SCLR              ; 32                          ;
 ;     plain             ; 22                          ;
-; cycloneiii_lcell_comb ; 278                         ;
-;     arith             ; 92                          ;
-;         2 data inputs ; 91                          ;
-;         3 data inputs ; 1                           ;
-;     normal            ; 186                         ;
+; cycloneiii_lcell_comb ; 282                         ;
+;     arith             ; 93                          ;
+;         2 data inputs ; 93                          ;
+;     normal            ; 189                         ;
 ;         0 data inputs ; 1                           ;
-;         1 data inputs ; 3                           ;
+;         1 data inputs ; 7                           ;
 ;         2 data inputs ; 6                           ;
-;         3 data inputs ; 31                          ;
-;         4 data inputs ; 145                         ;
+;         3 data inputs ; 27                          ;
+;         4 data inputs ; 148                         ;
 ;                       ;                             ;
 ; Max LUT depth         ; 9.00                        ;
-; Average LUT depth     ; 4.40                        ;
+; Average LUT depth     ; 4.33                        ;
 +-----------------------+-----------------------------+
 
 
@@ -311,7 +326,7 @@ Encoding Type:  One-Hot
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 17.1.0 Build 590 10/25/2017 SJ Lite Edition
-    Info: Processing started: Thu Sep 06 18:06:55 2018
+    Info: Processing started: Fri Sep 07 10:08:05 2018
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off Lab2 -c Lab2
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
@@ -338,9 +353,9 @@ Info (21057): Implemented 322 device resources after synthesis - the final resou
     Info (21059): Implemented 27 output pins
     Info (21061): Implemented 289 logic cells
 Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 12 warnings
-    Info: Peak virtual memory: 4811 megabytes
-    Info: Processing ended: Thu Sep 06 18:07:15 2018
+    Info: Peak virtual memory: 4817 megabytes
+    Info: Processing ended: Fri Sep 07 10:08:25 2018
     Info: Elapsed time: 00:00:20
-    Info: Total CPU time (on all processors): 00:00:38
+    Info: Total CPU time (on all processors): 00:00:36
 
 
