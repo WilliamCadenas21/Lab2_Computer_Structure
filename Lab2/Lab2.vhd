@@ -31,7 +31,7 @@ end lab2;
 -----------------------------------------------------
 
 architecture FSM of lab2 is
-	signal info: std_logic_vector(7 downto 0) := "11110000";
+	signal info: std_logic_vector(7 downto 0);
 
 	signal stop: integer := 0;--sin funcionalidad
 	signal sw: integer := 0;-- para el error de la primera letra
@@ -41,7 +41,7 @@ architecture FSM of lab2 is
 	signal r1: std_logic_vector(3 downto 0);
 	signal l1: std_logic_vector(3 downto 0); 
 	signal ps2_array : STD_LOGIC_VECTOR(10 DOWNTO 0);		
-	type state_type is (encender, configpantalla, encenderdisplay, limpiardisplay, configcursor, listo, fin, breakLine);    --Define dfferent states to control the LCD
+	type state_type is (encender, configpantalla, encenderdisplay, limpiardisplay, configcursor, listo, fin, breakLine, startagain);    --Define dfferent states to control the LCD
    signal estado: state_type;
 	constant milisegundos: integer := 50000;
 	constant microsegundos: integer := 50; 
@@ -116,7 +116,7 @@ process(info)
 				when "00111101" => ascii <= "00110111";--7
 				when "00111110" => ascii <= "00111000";--8
 				when "01000110" => ascii <= "00111001";--9
-				when others => ascii <= "00100101";	--(%) hex=25
+				when others => ascii <= "00101101";	--(dash) hex=25
 			end case;
 			
 end process;
@@ -146,6 +146,7 @@ end process;
 
 comb_logic: process(clock)
   variable contar: integer := 0;
+  variable contar3: integer := 0;
   variable contar2: integer := 0;
   begin
   
@@ -242,7 +243,8 @@ comb_logic: process(clock)
 				if(ascii /= "01000000") then
 						lcd <= ascii; -- ascii
 						contar := contar +1;
---						contar2 := contar2 +1;
+						contar2 := contar2 +1;
+						contar3 := contar3 +1;
 						estado <= listo;   
 				end if;
 			elsif (contar < 1*milisegundos) then
@@ -254,38 +256,55 @@ comb_logic: process(clock)
 				estado <= fin;
 			end if;
 			
---		when breakline =>	
---			if (contar = 0) then
---				rs <= '0';
---				rw <= '0';
---				enviar <= '1';
---				if(contar2= 16)then
---					lcd <= "11000000"; --Hacia abajo
---				elsif(contar2= 32)then
---					lcd <= "10000000"; --Hacia arriba
---					contar2 := 0;
---				end if;
---				contar := contar +1;
---				estado <= breakline;   
---			elsif (contar < 1*milisegundos) then
---				contar := contar + 1;       
---				estado <= breakline;
---			else
---				enviar <= '0';
---				contar := 0;
---				estado <= fin;
---			end if;
+		when startagain =>	
+			if (contar = 0) then
+				rs <= '0';
+				rw <= '0';
+				enviar <= '1';
+				lcd <= "10000000"; --Hacia arriba
+				contar := contar +1;
+				estado <= startagain;   
+			elsif (contar < 1*milisegundos) then
+				contar := contar + 1;       
+				estado <= startagain;
+			else
+				enviar <= '0';
+				contar := 0;
+				estado <= fin;
+			end if;
+			
+		when breakline =>	
+			if (contar = 0) then
+				rs <= '0';
+				rw <= '0';
+				enviar <= '1';
+				lcd <= "11000000"; --Hacia abajo
+				contar := contar +1;
+				estado <= breakline;   
+			elsif (contar < 1*milisegundos) then
+				contar := contar + 1;       
+				estado <= breakline;
+			else
+				enviar <= '0';
+				contar := 0;
+				estado <= fin;
+			end if;
 			
 		  when fin =>
---			if(contar2 = 16 or contar2 = 32)then
---				estado <= breakline;
---			else
---				if(ascii /= "01000000") then
---					estado <= fin;
---				else
-					estado <= listo;
---				end if;	
---			end if;
+				if(ascii /= "01000000") then
+					estado <= fin;
+				else
+					if(contar3 = 32)then
+						contar3 := 0;
+						contar2 := 0;
+						estado <= startagain;
+					elsif(contar2 = 16)then
+						contar2 := 0;
+						estado <= breakline;
+					else
+						estado <= listo;
+					end if;	
+				end if;
 			
 	    when others =>
 			estado <= encender;

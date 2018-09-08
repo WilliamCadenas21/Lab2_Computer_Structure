@@ -1,5 +1,5 @@
 Analysis & Synthesis report for Lab2
-Fri Sep 07 17:41:14 2018
+Sat Sep 08 15:27:51 2018
 Quartus Prime Version 17.1.0 Build 590 10/25/2017 SJ Lite Edition
 
 
@@ -46,15 +46,15 @@ refer to the applicable agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Fri Sep 07 17:41:14 2018       ;
+; Analysis & Synthesis Status        ; Successful - Sat Sep 08 15:27:51 2018       ;
 ; Quartus Prime Version              ; 17.1.0 Build 590 10/25/2017 SJ Lite Edition ;
 ; Revision Name                      ; Lab2                                        ;
 ; Top-level Entity Name              ; lab2                                        ;
 ; Family                             ; Cyclone IV E                                ;
-; Total logic elements               ; 243                                         ;
-;     Total combinational functions  ; 228                                         ;
-;     Dedicated logic registers      ; 119                                         ;
-; Total registers                    ; 119                                         ;
+; Total logic elements               ; 351                                         ;
+;     Total combinational functions  ; 332                                         ;
+;     Dedicated logic registers      ; 185                                         ;
+; Total registers                    ; 185                                         ;
 ; Total pins                         ; 39                                          ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0                                           ;
@@ -166,45 +166,45 @@ refer to the applicable agreement for further details.
 +----------------------------+-------------+
 
 
-+-----------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                              ;
-+----------------------------------+-----------------+-----------------+--------------------------------------------------------------------+---------+
-; File Name with User-Entered Path ; Used in Netlist ; File Type       ; File Name with Absolute Path                                       ; Library ;
-+----------------------------------+-----------------+-----------------+--------------------------------------------------------------------+---------+
-; Lab2.vhd                         ; yes             ; User VHDL File  ; C:/Users/Labsistemas/Desktop/Lab2_Computer_Structure/Lab2/Lab2.vhd ;         ;
-+----------------------------------+-----------------+-----------------+--------------------------------------------------------------------+---------+
++------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                               ;
++----------------------------------+-----------------+-----------------+---------------------------------------------------------------------+---------+
+; File Name with User-Entered Path ; Used in Netlist ; File Type       ; File Name with Absolute Path                                        ; Library ;
++----------------------------------+-----------------+-----------------+---------------------------------------------------------------------+---------+
+; Lab2.vhd                         ; yes             ; User VHDL File  ; C:/Users/Estudiante/Documents/Lab2_Computer_Structure/Lab2/Lab2.vhd ;         ;
++----------------------------------+-----------------+-----------------+---------------------------------------------------------------------+---------+
 
 
-+-------------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary                 ;
-+---------------------------------------------+---------------+
-; Resource                                    ; Usage         ;
-+---------------------------------------------+---------------+
-; Estimated Total logic elements              ; 243           ;
-;                                             ;               ;
-; Total combinational functions               ; 228           ;
-; Logic element usage by number of LUT inputs ;               ;
-;     -- 4 input functions                    ; 124           ;
-;     -- 3 input functions                    ; 32            ;
-;     -- <=2 input functions                  ; 72            ;
-;                                             ;               ;
-; Logic elements by mode                      ;               ;
-;     -- normal mode                          ; 166           ;
-;     -- arithmetic mode                      ; 62            ;
-;                                             ;               ;
-; Total registers                             ; 119           ;
-;     -- Dedicated logic registers            ; 119           ;
-;     -- I/O registers                        ; 0             ;
-;                                             ;               ;
-; I/O pins                                    ; 39            ;
-;                                             ;               ;
-; Embedded Multiplier 9-bit elements          ; 0             ;
-;                                             ;               ;
-; Maximum fan-out node                        ; ps2_clk~input ;
-; Maximum fan-out                             ; 70            ;
-; Total fan-out                               ; 1170          ;
-; Average fan-out                             ; 2.75          ;
-+---------------------------------------------+---------------+
++-----------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary               ;
++---------------------------------------------+-------------+
+; Resource                                    ; Usage       ;
++---------------------------------------------+-------------+
+; Estimated Total logic elements              ; 351         ;
+;                                             ;             ;
+; Total combinational functions               ; 332         ;
+; Logic element usage by number of LUT inputs ;             ;
+;     -- 4 input functions                    ; 159         ;
+;     -- 3 input functions                    ; 36          ;
+;     -- <=2 input functions                  ; 137         ;
+;                                             ;             ;
+; Logic elements by mode                      ;             ;
+;     -- normal mode                          ; 208         ;
+;     -- arithmetic mode                      ; 124         ;
+;                                             ;             ;
+; Total registers                             ; 185         ;
+;     -- Dedicated logic registers            ; 185         ;
+;     -- I/O registers                        ; 0           ;
+;                                             ;             ;
+; I/O pins                                    ; 39          ;
+;                                             ;             ;
+; Embedded Multiplier 9-bit elements          ; 0           ;
+;                                             ;             ;
+; Maximum fan-out node                        ; clock~input ;
+; Maximum fan-out                             ; 115         ;
+; Total fan-out                               ; 1714        ;
+; Average fan-out                             ; 2.88        ;
++---------------------------------------------+-------------+
 
 
 +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -212,26 +212,27 @@ refer to the applicable agreement for further details.
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
 ; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name ; Entity Name ; Library Name ;
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
-; |lab2                      ; 228 (228)           ; 119 (119)                 ; 0           ; 0            ; 0       ; 0         ; 39   ; 0            ; |lab2               ; lab2        ; work         ;
+; |lab2                      ; 332 (332)           ; 185 (185)                 ; 0           ; 0            ; 0       ; 0         ; 39   ; 0            ; |lab2               ; lab2        ; work         ;
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
 
 Encoding Type:  One-Hot
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; State Machine - |lab2|estado                                                                                                                                                           ;
-+------------------------+------------------+------------+--------------+---------------------+-----------------------+------------------------+-----------------------+-----------------+
-; Name                   ; estado.breakLine ; estado.fin ; estado.listo ; estado.configcursor ; estado.limpiardisplay ; estado.encenderdisplay ; estado.configpantalla ; estado.encender ;
-+------------------------+------------------+------------+--------------+---------------------+-----------------------+------------------------+-----------------------+-----------------+
-; estado.encender        ; 0                ; 0          ; 0            ; 0                   ; 0                     ; 0                      ; 0                     ; 0               ;
-; estado.configpantalla  ; 0                ; 0          ; 0            ; 0                   ; 0                     ; 0                      ; 1                     ; 1               ;
-; estado.encenderdisplay ; 0                ; 0          ; 0            ; 0                   ; 0                     ; 1                      ; 0                     ; 1               ;
-; estado.limpiardisplay  ; 0                ; 0          ; 0            ; 0                   ; 1                     ; 0                      ; 0                     ; 1               ;
-; estado.configcursor    ; 0                ; 0          ; 0            ; 1                   ; 0                     ; 0                      ; 0                     ; 1               ;
-; estado.listo           ; 0                ; 0          ; 1            ; 0                   ; 0                     ; 0                      ; 0                     ; 1               ;
-; estado.fin             ; 0                ; 1          ; 0            ; 0                   ; 0                     ; 0                      ; 0                     ; 1               ;
-; estado.breakLine       ; 1                ; 0          ; 0            ; 0                   ; 0                     ; 0                      ; 0                     ; 1               ;
-+------------------------+------------------+------------+--------------+---------------------+-----------------------+------------------------+-----------------------+-----------------+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |lab2|estado                                                                                                                                                                               ;
++------------------------+-------------------+------------------+------------+--------------+---------------------+-----------------------+------------------------+-----------------------+-----------------+
+; Name                   ; estado.startagain ; estado.breakLine ; estado.fin ; estado.listo ; estado.configcursor ; estado.limpiardisplay ; estado.encenderdisplay ; estado.configpantalla ; estado.encender ;
++------------------------+-------------------+------------------+------------+--------------+---------------------+-----------------------+------------------------+-----------------------+-----------------+
+; estado.encender        ; 0                 ; 0                ; 0          ; 0            ; 0                   ; 0                     ; 0                      ; 0                     ; 0               ;
+; estado.configpantalla  ; 0                 ; 0                ; 0          ; 0            ; 0                   ; 0                     ; 0                      ; 1                     ; 1               ;
+; estado.encenderdisplay ; 0                 ; 0                ; 0          ; 0            ; 0                   ; 0                     ; 1                      ; 0                     ; 1               ;
+; estado.limpiardisplay  ; 0                 ; 0                ; 0          ; 0            ; 0                   ; 1                     ; 0                      ; 0                     ; 1               ;
+; estado.configcursor    ; 0                 ; 0                ; 0          ; 0            ; 1                   ; 0                     ; 0                      ; 0                     ; 1               ;
+; estado.listo           ; 0                 ; 0                ; 0          ; 1            ; 0                   ; 0                     ; 0                      ; 0                     ; 1               ;
+; estado.fin             ; 0                 ; 0                ; 1          ; 0            ; 0                   ; 0                     ; 0                      ; 0                     ; 1               ;
+; estado.breakLine       ; 0                 ; 1                ; 0          ; 0            ; 0                   ; 0                     ; 0                      ; 0                     ; 1               ;
+; estado.startagain      ; 1                 ; 0                ; 0          ; 0            ; 0                   ; 0                     ; 0                      ; 0                     ; 1               ;
++------------------------+-------------------+------------------+------------+--------------+---------------------+-----------------------+------------------------+-----------------------+-----------------+
 
 
 +--------------------------------------------------------------------------------+
@@ -240,8 +241,7 @@ Encoding Type:  One-Hot
 ; Register name                         ; Reason for Removal                     ;
 +---------------------------------------+----------------------------------------+
 ; rw~reg0                               ; Stuck at GND due to stuck port data_in ;
-; estado.breakLine                      ; Stuck at GND due to stuck port data_in ;
-; Total Number of Removed Registers = 2 ;                                        ;
+; Total Number of Removed Registers = 1 ;                                        ;
 +---------------------------------------+----------------------------------------+
 
 
@@ -250,12 +250,12 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 119   ;
-; Number of registers using Synchronous Clear  ; 64    ;
+; Total registers                              ; 185   ;
+; Number of registers using Synchronous Clear  ; 128   ;
 ; Number of registers using Synchronous Load   ; 0     ;
 ; Number of registers using Asynchronous Clear ; 0     ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 67    ;
+; Number of registers using Clock Enable       ; 131   ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -279,22 +279,20 @@ Encoding Type:  One-Hot
 ; display_left[2]~reg0                    ; 1       ;
 ; display_left[1]~reg0                    ; 1       ;
 ; display_left[0]~reg0                    ; 1       ;
-; info[7]                                 ; 15      ;
-; info[4]                                 ; 14      ;
-; info[5]                                 ; 16      ;
-; info[6]                                 ; 14      ;
-; Total number of inverted registers = 18 ;         ;
+; Total number of inverted registers = 14 ;         ;
 +-----------------------------------------+---------+
 
 
-+--------------------------------------------------------------------------------------------------------------------------------------------+
-; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                             ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------+
-; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output   ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------+
-; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |lab2|lcd[4]~reg0            ;
-; 8:1                ; 32 bits   ; 160 LEs       ; 32 LEs               ; 128 LEs                ; Yes        ; |lab2|\comb_logic:contar[29] ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------+
++---------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                              ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output    ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------+
+; 5:1                ; 32 bits   ; 96 LEs        ; 32 LEs               ; 64 LEs                 ; Yes        ; |lab2|\comb_logic:contar3[18] ;
+; 7:1                ; 32 bits   ; 128 LEs       ; 32 LEs               ; 96 LEs                 ; Yes        ; |lab2|\comb_logic:contar2[14] ;
+; 7:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |lab2|lcd[4]~reg0             ;
+; 8:1                ; 32 bits   ; 160 LEs       ; 32 LEs               ; 128 LEs                ; Yes        ; |lab2|\comb_logic:contar[18]  ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------+
 
 
 +-----------------------------------------------------+
@@ -303,23 +301,23 @@ Encoding Type:  One-Hot
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
 ; boundary_port         ; 39                          ;
-; cycloneiii_ff         ; 119                         ;
+; cycloneiii_ff         ; 185                         ;
 ;     ENA               ; 35                          ;
-;     ENA SCLR          ; 32                          ;
+;     ENA SCLR          ; 96                          ;
 ;     SCLR              ; 32                          ;
-;     plain             ; 20                          ;
-; cycloneiii_lcell_comb ; 243                         ;
-;     arith             ; 62                          ;
-;         2 data inputs ; 62                          ;
-;     normal            ; 181                         ;
+;     plain             ; 22                          ;
+; cycloneiii_lcell_comb ; 347                         ;
+;     arith             ; 124                         ;
+;         2 data inputs ; 124                         ;
+;     normal            ; 223                         ;
 ;         0 data inputs ; 1                           ;
-;         1 data inputs ; 20                          ;
-;         2 data inputs ; 4                           ;
-;         3 data inputs ; 32                          ;
-;         4 data inputs ; 124                         ;
+;         1 data inputs ; 18                          ;
+;         2 data inputs ; 9                           ;
+;         3 data inputs ; 36                          ;
+;         4 data inputs ; 159                         ;
 ;                       ;                             ;
-; Max LUT depth         ; 8.00                        ;
-; Average LUT depth     ; 4.20                        ;
+; Max LUT depth         ; 9.00                        ;
+; Average LUT depth     ; 4.28                        ;
 +-----------------------+-----------------------------+
 
 
@@ -338,32 +336,32 @@ Encoding Type:  One-Hot
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 17.1.0 Build 590 10/25/2017 SJ Lite Edition
-    Info: Processing started: Fri Sep 07 17:41:03 2018
+    Info: Processing started: Sat Sep 08 15:27:27 2018
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off Lab2 -c Lab2
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
 Info (12021): Found 2 design units, including 1 entities, in source file lab2.vhd
-    Info (12022): Found design unit 1: lab2-FSM File: C:/Users/Labsistemas/Desktop/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 33
-    Info (12023): Found entity 1: lab2 File: C:/Users/Labsistemas/Desktop/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 8
+    Info (12022): Found design unit 1: lab2-FSM File: C:/Users/Estudiante/Documents/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 33
+    Info (12023): Found entity 1: lab2 File: C:/Users/Estudiante/Documents/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 8
 Info (12127): Elaborating entity "Lab2" for the top level hierarchy
-Warning (10036): Verilog HDL or VHDL warning at Lab2.vhd(36): object "stop" assigned a value but never read File: C:/Users/Labsistemas/Desktop/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 36
+Warning (10036): Verilog HDL or VHDL warning at Lab2.vhd(36): object "stop" assigned a value but never read File: C:/Users/Estudiante/Documents/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 36
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "rw" is stuck at GND File: C:/Users/Labsistemas/Desktop/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 23
+    Warning (13410): Pin "rw" is stuck at GND File: C:/Users/Estudiante/Documents/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 23
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
 Warning (21074): Design contains 3 input pin(s) that do not drive logic
-    Warning (15610): No output dependent on input pin "reset" File: C:/Users/Labsistemas/Desktop/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 13
-    Warning (15610): No output dependent on input pin "velocity" File: C:/Users/Labsistemas/Desktop/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 14
-    Warning (15610): No output dependent on input pin "provicional" File: C:/Users/Labsistemas/Desktop/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 17
-Info (21057): Implemented 283 device resources after synthesis - the final resource count might be different
+    Warning (15610): No output dependent on input pin "reset" File: C:/Users/Estudiante/Documents/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 13
+    Warning (15610): No output dependent on input pin "velocity" File: C:/Users/Estudiante/Documents/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 14
+    Warning (15610): No output dependent on input pin "provicional" File: C:/Users/Estudiante/Documents/Lab2_Computer_Structure/Lab2/Lab2.vhd Line: 17
+Info (21057): Implemented 391 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 6 input pins
     Info (21059): Implemented 33 output pins
-    Info (21061): Implemented 244 logic cells
+    Info (21061): Implemented 352 logic cells
 Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 8 warnings
-    Info: Peak virtual memory: 4813 megabytes
-    Info: Processing ended: Fri Sep 07 17:41:14 2018
-    Info: Elapsed time: 00:00:11
-    Info: Total CPU time (on all processors): 00:00:24
+    Info: Peak virtual memory: 4812 megabytes
+    Info: Processing ended: Sat Sep 08 15:27:51 2018
+    Info: Elapsed time: 00:00:24
+    Info: Total CPU time (on all processors): 00:00:43
 
 
